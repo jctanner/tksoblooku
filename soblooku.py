@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import copy
+import json
 import math
 import random
 import time
@@ -191,10 +192,12 @@ class Application(Frame):
                 solution = self.backtrack_solution(problemset)
             except Exception:
                 pass
+            #solution = self.backtrack_solution(problemset)
         if solution:
             self.solved = True
         
-        #import epdb; epdb.st()
+        with open('solution.json', 'w') as f:
+            f.write(json.dumps({'vals': solution}, indent=2))
 
     def solve_tree(self):
         print('solving ...')
@@ -210,6 +213,7 @@ class Application(Frame):
 
     def solve_randomly(self):
         print('solving ...')
+        import q; q('solve_randomly')
         '''
         count = 0
         solved = False
@@ -232,6 +236,7 @@ class Application(Frame):
     def backtrack_solution(self, problemset):
 
         print('backtrack start ...')
+        import q; q('backtrack')
 
         answerset = [x for x in problemset]
         answer_chunks = sl.chunk_set(problemset)
@@ -247,10 +252,10 @@ class Application(Frame):
         while not solved:
 
             iteration += 1
-            print('iteration: %s' % iteration)
+            #print('iteration: %s' % iteration)
 
             ctuples = sl.get_choice_map(answer_chunks)
-            print('unfilled: %s' % len(ctuples))
+            #print('unfilled: %s' % len(ctuples))
             #print(ctuples)
             ct = ctuples[0]
             idc = ct[0][0]
@@ -258,55 +263,39 @@ class Application(Frame):
             self.active_tile = \
                 sl.get_chunk_bit_location(idc, idx, val=None, chunks=None)
             self.redraw()
-            
-            '''
-            invalid, examined = sl.get_invalid_values_for_cell(
-                answer_chunks,
-                tilecount,
-                tilesq,
-                idc,
-                idx
-            )
-            self.examined_tiles = examined[:]
-            '''
 
-            '''
-            #choices = [y for y in range(1, (tilecount + 1)) if y not in ac and y not in invalid]
-            choices = [y for y in range(1, 10) if y not in invalid]
-            print(f'\tinvalid: {invalid}')
-            print(f'\tchoices: {choices}')
-            if not choices and 1 not in invalid:
-                import epdb; epdb.st()
-            '''
-
-            #self.redraw()
-
-            #if not choices:
-            #    raise Exception('STUCK!')
-
-            #choice = random.choice(choices)
             choice = random.choice(ct[2])
             answer_chunks[idc][idx] = choice
             self.answerset_to_cells(sl.dechunk_set(answer_chunks))
             self.redraw()
-            #time.sleep(.5)
-
-            #if len(ctuples) > 1:
-            #    continue
 
             score = sl.score_bits(answer_chunks)
             print('SCORE: %s' % score)
+            #with open('scores.log', 'a') as f:
+            #    f.write(f'score: {score}\n')
             if score == 81:
+                #time.sleep(10)
                 solved = True
+                break
 
-        #import epdb; epdb.st()
         solution = sl.dechunk_set(answer_chunks)
+        #import epdb; epdb.st()
+
+        '''
+        try:
+            with open('solution.json', 'w') as f:
+                f.write(json.dumps(solution, indent=2))
+        except Exception as e:
+            pass
+        '''
+
         print('back track finished')
         return solution
 
     def treesearch_solution(self, problemset):
 
         print('treesearch start ...')
+        import q; q('tree search')
 
         answerset = [x for x in problemset]
         answer_chunks = sl.chunk_set(problemset)
@@ -371,6 +360,8 @@ class Application(Frame):
         return solution
 
     def randomize_solution(self, problemset):
+        import q; q('randomize solution')
+
         answerset = [x for x in problemset]
         answer_chunks = sl.chunk_set(problemset)
         answer_chunks = [list(x) for x in answer_chunks]
@@ -433,6 +424,8 @@ class Application(Frame):
         return solution
 
     def create_solution(self, answer_chunks):
+        import q; q('create solution')
+
         tilecount = len(answer_chunks)
         tilesq = int(math.sqrt(len(answer_chunks)))
         choicemax = 1

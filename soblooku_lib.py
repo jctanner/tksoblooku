@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
 import copy
+import json
 import math
+import os
 import random
 import time
 from itertools import zip_longest
@@ -46,6 +48,49 @@ for x in range(0,9):
 TESTGAME[0][0] = 1
 #import epdb; epdb.st()
 '''
+
+if os.path.exists('board.json'):
+    TESTGAME = []
+    for x in range(0, 9):
+        row = []
+        for y in range(0, 9):
+            row.append('')
+        TESTGAME.append(row)
+
+    with open('board.json', 'r') as f:
+        board = json.loads(f.read())
+
+    rownum = 0
+    rowix = 0
+    for x in range(0, 81):
+        #print(x)
+        xid = x + 1
+        #rowix = x % 8
+
+        #if x > 0 and (xid % 9 == 0):
+        #    rownum += 1
+
+        val = board[x] or ''
+        if val:
+            val = int(val)
+
+        print(f'{x} rown:{rownum} ix:{rowix} --> {val}')
+
+        #if x != 0 and (rownum == 0 and rowix == 0):
+        #    import epdb; epdb.st()
+
+        TESTGAME[rownum]
+        TESTGAME[rownum][rowix] = val
+
+        #if x > 0 and (xid % 9 == 0):
+        #    rownum += 1
+        if rowix == 8:
+            rownum += 1
+            rowix = 0
+        else:
+            rowix += 1
+
+    #import epdb; epdb.st()
 
 TESTGRID = []
 TESTGRID += [['A0', 'B0', 'C0', 'D0', 'E0', 'F0', 'G0', 'H0', 'I0']]
